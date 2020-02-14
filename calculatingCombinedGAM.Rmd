@@ -1,0 +1,74 @@
+---
+title: Notes on calculating combined GAM estimates within the Rapid Assessment Method (RAM)
+author: ""
+date: '`r format(Sys.Date(), "%d %B %Y")`'
+fontsize: 12pt
+geometry: margin=2cm
+documentclass: article
+classoption: a4paper
+bibliography: bibliography.bib
+lot: FALSE
+lof: FALSE
+link-citations: TRUE
+links-as-notes: FALSE
+colorlinks: TRUE
+linkcolor: blue
+citecolor: blue
+urlcolor: blue
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE)
+
+if(!require(ggplot2)) install.packages("ggplot2")
+if(!require(magrittr)) install.packages("magrittr")
+
+themeSettings <- theme_bw() + 
+  theme(panel.border = element_rect(colour = "#993300",
+                                    size = 0.5),
+        panel.grid.major = element_line(linetype = 1, 
+                                        size = 0.2, 
+                                        colour = "gray90"),
+        panel.grid.minor = element_line(linetype = 0),
+        strip.background = element_rect(colour = "#993300",
+                                        fill = "#993300"),
+        strip.text = element_text(colour = "white"),
+        legend.key = element_rect(linetype = 0),
+        axis.text.x = element_text(size = 10),
+        axis.text.y = element_text(size = 10),
+        axis.ticks = element_line(colour = "#993300", size = 0.5))
+
+```
+
+\newpage
+
+# Background
+
+# Possible approach
+
+PROBIT gives a probability so we look to combining two probabilities:
+
+$$ P(GAM_{\text{MUAC}} ~ \cup ~ GAM_{\text{WHZ}}) ~ = ~ P(GAM_{\text{MUAC}}) ~ + ~ P(GAM_{\text{WHZ}}) $$
+
+However, the problem is that we do not have `independent` probabilities. We overestimate because the intersection gets counted twice. Therefore we need:
+
+$$ P(GAM_{\text{MUAC}} ~ \cup ~ GAM_{\text{WHZ}}) ~ = ~ P(GAM_{\text{MUAC}}) ~ + ~ P(GAM_{\text{WHZ}}) ~ - ~ P(GAM_{\text{MUAC}} ~ \cap ~ GAM_{\text{WHZ}}) $$
+
+We have the first two terms but not the third. We can estimate the third term from a 2 by 2 table:
+
+```{r twoByTwo, echo = FALSE, eval = TRUE}
+twoByTwo <- data.frame(rbind(c("a", "b"), c("c", "d")))
+row.names(twoByTwo) <- c("MUAC < 125", "MUAC ≥ 125")
+
+knitr::kable(x = twoByTwo,
+             row.names = TRUE,
+             col.names = c("WHZ < -2", "WHZ ≥ -2"),
+             format = "latex") %>%
+  kableExtra::kable_styling(latex_options = c("striped", "HOLD_position"))
+```
+
+and
+
+$$ P(GAM_{\text{MUAC}} ~ \cap ~ GAM_{\text{WHZ}}) ~ = ~ \frac{a}{a ~ + ~ b ~ + ~ c ~ + ~ d} $$

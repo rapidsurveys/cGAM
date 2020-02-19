@@ -18,7 +18,7 @@ urlcolor: blue
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE,
+knitr::opts_chunk$set(echo = FALSE,
                       warning = FALSE,
                       message = FALSE)
 
@@ -60,13 +60,14 @@ We have the first two terms but not the third. We can estimate the third term fr
 
 ```{r twoByTwo, echo = FALSE, eval = TRUE}
 twoByTwo <- data.frame(rbind(c("a", "b"), c("c", "d")))
-row.names(twoByTwo) <- c("MUAC < 125", "MUAC ≥ 125")
+row.names(twoByTwo) <- c("MUAC $<$ 125", "MUAC $\\geq$ 125")
 
 knitr::kable(x = twoByTwo,
              booktabs = TRUE,
              row.names = TRUE,
-             col.names = c("WHZ < -2", "WHZ ≥ -2"),
+             col.names = c("WHZ $<$ -2", "WHZ $\\geq$ -2"),
              align = "c",
+             escape = FALSE,
              format = "latex") %>%
   kableExtra::row_spec(row = 0, bold = TRUE) %>%   
   kableExtra::column_spec(column = 1, bold = TRUE) %>%

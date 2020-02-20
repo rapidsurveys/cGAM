@@ -10,7 +10,7 @@ bookdown::pdf_document2:
   toc: true
   toc_depth: 3
   number_sections: true
-  highlight: tango #pygment
+  highlight: haddock
   keep_tex: yes
   fig_caption: yes
   latex_engine: xelatex

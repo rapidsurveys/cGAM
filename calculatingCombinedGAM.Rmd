@@ -1,6 +1,6 @@
 ---
 title: Notes on calculating combined GAM estimates within the Rapid Assessment Method (RAM)
-author: ""
+author: "Mark Myatt"
 date: "15 February 2020" #'`r format(Sys.Date(), "%d %B %Y")`'
 fontsize: 12pt
 geometry: margin=2cm
@@ -45,9 +45,11 @@ themeSettings <- theme_bw() +
 
 # Background
 
-\newpage
+A June 2019 article in Field Exchange advocates for the reporting of combined GAM estimate (i.e., a single prevalence estimate for GAM cases identified by WHZ and by MUAC). By January 2020, the SMART ENA software has included the calculation and reporting of this single GAM prevalence estimate.
 
-# Possible approach
+This document reports on our current thining on how this single prevalence estimate can be calculated within the Rapid Assessment Method (RAM). Additionally, we explore how oedema cases can also be added in calculating this single GAM prevalence estimate.
+
+# Proposed approach
 
 PROBIT gives a probability so we look to combining two probabilities:
 
@@ -71,7 +73,7 @@ knitr::kable(x = twoByTwo,
              escape = FALSE,
              format = "latex") %>%
   kableExtra::kable_styling(latex_options = c("striped", "HOLD_position"), 
-                            font_size = 16) %>%  
+                            font_size = 12) %>%  
   kableExtra::row_spec(row = 0, bold = TRUE) %>%   
   kableExtra::row_spec(row = 1:2, monospace = TRUE) %>%
   kableExtra::column_spec(column = 1:3, monospace = TRUE) %>%
@@ -92,27 +94,41 @@ We can try to move forward with this hybrid method.
 
 \newpage
 
-We try this in R using a dataset from Uganda.
+# Worked example for combined GAM by WHZ and GAM by MUAC
+
+We try the proposed approach in R using a dataset from Uganda.
 
 ```{r example1, echo = TRUE, eval = TRUE}
-## Read dataset
+## Read dataset from Uganda
 x <- read.table(file = "data/ugan01.csv", header = TRUE, sep = ",")
+
+## First 10 rows of the Uganda dataset
+```
+
+```{r example1a, echo = FALSE, eval = TRUE}
+head(x, 10)
 ```
 
 &nbsp;
 
-We then create case definitions.
+We then create case definitions as follows:
 
 ```{r example2, echo = TRUE, eval = TRUE}
 ## Case definitions
 x$gamWHZ <- ifelse(x$whz < -2, 1, 2)               ## GAM by WHZ
 x$gamMUAC <- ifelse(x$muac < 125, 1, 2)            ## GAM by MUAC
 x$cGAM <- ifelse(x$whz < -2 | x$muac < 125, 1, 2)  ## GAM by WHZ and MUAC
+
+## First 10 rows of the updated Uganda dataset contining case definitions
 ```
 
-&nbsp;
+```{r example2a, echo = FALSE, eval = TRUE}
+head(x, 10)
+```
 
-Calculating for prevalence in the classical approach we get:
+## Combined GAM estimation using the classical approach
+
+Calculating for prevalence using the classical approach we get:
 
 ```{r example3, echo = TRUE, eval = TRUE}
 ## Classic prevalence for GAM by MUAC
@@ -136,9 +152,11 @@ chisq.test(table(x$gamMUAC, x$gamWHZ))
 
 &nbsp;
 
-The chi-square test has a p-value of `r chisq.test(table(x$gamMUAC, x$gamWHZ))$p.value` indicating that the two case definitions are not independent.
+The chi-square test has a *p-value* of `r chisq.test(table(x$gamMUAC, x$gamWHZ))$p.value` indicating that the two case definitions are not independent.
 
 \newpage
+
+## Combined GAM estimation using proposed hybrid approach
 
 We then proceed with our proposed hybrid approach using simple PROBIT prevalence estimation.
 
@@ -178,4 +196,110 @@ round(pUNION * 100, 2)
 ```{r example9, echo = TRUE, eval = TRUE}
 ## Estimate of GAM by MUAC and WHZ by PROBIT
 round((pMUAC + pWHZ - pUNION) * 100, 2)
+```
+
+\newpage
+
+# Extending the approach to include oedema cases
+
+Using the same concepts, we can extend the approach to include oedema cases. For this we need to take into account not only the intersection between GAM by MUAC and GAM by WHZ but also the intersection of GAM by MUAC and oedema cases, the intersection of GAM by WHZ and oedema cases, and the intersection between GAM by MUAC, GAM by WHZ and oedema cases as follows:
+
+$$\begin{aligned}
+P(GAM_{\text{MUAC}} ~ \cup ~ & GAM_{\text{WHZ}} ~ \cup ~ SAM_{\text{oedema}}) ~ = \\
+& P(GAM_{\text{MUAC}}) ~ + ~ P(GAM_{\text{WHZ}}) ~ + ~ P(SAM_\text{oedema}) \\ 
+~ & - ~ [P(GAM_{\text{MUAC}} ~ \cap ~ GAM_{\text{WHZ}}) ~ - ~ P(GAM_{\text{MUAC}} ~ \cap ~ GAM_{\text{WHZ}} ~ \cap ~ SAM_{\text{oedema}})] \\
+~ & - ~ [P(GAM_{\text{MUAC}} ~ \cap ~ SAM_{\text{oedema}}) ~ - ~ P(GAM_{\text{MUAC}} ~ \cap ~ GAM_{\text{WHZ}} ~ \cap ~ SAM_{\text{oedema}})] \\
+~ & - ~ [P(GAM_{\text{WHZ}} ~ \cap ~ SAM_{\text{oedema}}) ~ - ~ P(GAM_{\text{MUAC}} ~ \cap ~ GAM_{\text{WHZ}} ~ \cap ~ SAM_{\text{oedema}})] \\
+~ & - ~ P(GAM_{\text{MUAC}} ~ \cap ~ GAM_{\text{WHZ}} ~ \cap ~ SAM_{\text{oedema}})
+\end{aligned}$$
+
+Simplifying this we get:
+
+$$\begin{aligned}
+P(GAM_{\text{MUAC}} ~ \cup ~ & GAM_{\text{WHZ}} ~ \cup ~ SAM_{\text{oedema}}) ~ = \\
+& P(GAM_{\text{MUAC}}) ~ + ~ P(GAM_{\text{WHZ}}) ~ + ~ P(SAM_\text{oedema}) \\ 
+~ & - ~ P(GAM_{\text{MUAC}} ~ \cap ~ GAM_{\text{WHZ}}) \\
+~ & - ~ P(GAM_{\text{MUAC}} ~ \cap ~ SAM_{\text{oedema}} \\
+~ & - ~ P(GAM_{\text{WHZ}} ~ \cap ~ SAM_{\text{oedema}}) \\ 
+~ & + ~ (2 \times P(GAM_{\text{MUAC}} ~ \cap ~ GAM_{\text{WHZ}} ~ \cap ~ SAM_{\text{oedema}}))
+\end{aligned}$$
+
+# Worked example for combined GAM by WHZ, GAM by MUAC and oedema
+
+We try the proposed approach in R using the same dataset from Uganda used in the previous example. We already have an oedema variable that is coded into 1 for an oedema case and 2 for a non-oedema case. We just need to re-define the `cGAM` variable to include oedema cases.
+
+\newpage
+
+```{r example10, echo = TRUE, eval = TRUE}
+## Case definition for combined GAM including oedema cases
+x$cGAM <- ifelse(x$whz < -2 | x$muac < 125 | x$oedema == 1, 1, 2)
+
+## First 10 rows of the updated Uganda dataset contining case definitions
+```
+
+```{r example10a, echo = FALSE, eval = TRUE}
+head(x, 10)
+```
+
+## Combined GAM estimation using the classical approach
+
+Calculating for oedema and combine GAM prevalence using the classical estimator we get:
+
+```{r example11, echo = TRUE, eval = TRUE}
+## Classic prevalence for oedema cases
+round(prop.table(table(x$oedema))[1] * 100, 2)
+
+## Classic prevalence for GAM by WHZ and MUAC and oedema cases
+round(prop.table(table(x$cGAM))[1] * 100, 2)
+```
+
+## Combined GAM estimation using proposed hybrid approach
+
+We then proceed with our proposed hybrid approach using simple PROBIT prevalence estimation to include oedema cases.
+
+```{r example12, echo = TRUE, eval = TRUE}
+## Estimate the probability of oedema cases
+pOedema <- prop.table(table(x$oedema))[1]
+```
+
+```{r example13, echo = TRUE, eval = TRUE}
+## Estimate union probability for WHZ and oedema
+pOedemaWHZ <- table(x$gamWHZ, x$oedema)[1,1] / sum(table(x$gamWHZ, x$oedema))
+```
+
+```{r example13a, echo = FALSE, eval = TRUE}
+round(pOedemaWHZ * 100, 2)
+```
+
+&nbsp;
+
+```{r example14, echo = TRUE, eval = TRUE}
+## Estimate union probability for MUAC and oedema
+pOedemaMUAC <- table(x$gamMUAC, x$oedema)[1,1] / sum(table(x$gamMUAC, x$oedema))
+```
+
+```{r example14a, echo = FALSE, eval = TRUE}
+round(pOedemaMUAC * 100, 2)
+```
+
+&nbsp;
+
+```{r example15, echo = TRUE, eval = TRUE}
+## Create variable for GAM meeting WHZ, MUAC and oedema criteria
+x$gamUnion <- ifelse(x$oedema == 1 & x$gamWHZ == 1 & x$gamMUAC == 1, 1, 2)
+
+## Estimate union probability for MUAC, WHZ and oedema
+pGAMunion <- prop.table(table(x$gamUnion))[1]
+```
+
+```{r example15a, echo = FALSE, eval = TRUE}
+round(pGAMunion * 100, 2)
+```
+
+&nbsp;
+
+```{r example16, echo = TRUE, eval = TRUE}
+## Estimate combined GAM including oedema cases
+round((pMUAC + pWHZ + pOedema - pUNION - pOedemaWHZ - 
+         pOedemaMUAC + (2 * pGAMunion)) * 100, 2)
 ```

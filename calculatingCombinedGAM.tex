@@ -32,6 +32,7 @@
 \usepackage{hyperref}
 \hypersetup{
             pdftitle={Notes on calculating combined GAM estimates within the Rapid Assessment Method (RAM)},
+            pdfauthor={Mark Myatt},
             colorlinks=true,
             linkcolor=blue,
             filecolor=Maroon,
@@ -145,11 +146,15 @@
 \bibliographystyle{plainnat}
 
 \title{Notes on calculating combined GAM estimates within the Rapid Assessment Method (RAM)}
-\author{}
-\date{\vspace{-2.5em}15 February 2020}
+\author{Mark Myatt}
+\date{15 February 2020}
 
 \begin{document}
 \maketitle
+
+\pagebreak
+
+\pagenumbering{arabic}
 
 {
 \hypersetup{linkcolor=}
@@ -161,10 +166,12 @@
 \hypertarget{background}{%
 \section{Background}\label{background}}
 
-\newpage
+A June 2019 article in Field Exchange advocates for the reporting of combined GAM estimate (i.e., a single prevalence estimate for GAM cases identified by WHZ and by MUAC). By January 2020, the SMART ENA software has included the calculation and reporting of this single GAM prevalence estimate.
 
-\hypertarget{possible-approach}{%
-\section{Possible approach}\label{possible-approach}}
+This document reports on our current thining on how this single prevalence estimate can be calculated within the Rapid Assessment Method (RAM). Additionally, we explore how oedema cases can also be added in calculating this single GAM prevalence estimate.
+
+\hypertarget{proposed-approach}{%
+\section{Proposed approach}\label{proposed-approach}}
 
 PROBIT gives a probability so we look to combining two probabilities:
 
@@ -177,7 +184,7 @@ However, the problem is that we do not have \texttt{independent} probabilities. 
 We have the first two terms but not the third. We can estimate the third term from a 2 by 2 table:
 
 \begin{table}[H]
-\centering\begingroup\fontsize{16}{18}\selectfont
+\centering\begingroup\fontsize{12}{14}\selectfont
 
 \begin{tabular}{>{\bfseries}l>{\ttfamily}c>{\ttfamily}c}
 \toprule
@@ -204,18 +211,37 @@ We can try to move forward with this hybrid method.
 
 \newpage
 
-We try this in R using a dataset from Uganda.
+\hypertarget{worked-example-for-combined-gam-by-whz-and-gam-by-muac}{%
+\section{Worked example for combined GAM by WHZ and GAM by MUAC}\label{worked-example-for-combined-gam-by-whz-and-gam-by-muac}}
+
+We try the proposed approach in R using a dataset from Uganda.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{## Read dataset}
+\CommentTok{## Read dataset from Uganda}
 \NormalTok{x <-}\StringTok{ }\KeywordTok{read.table}\NormalTok{(}\DataTypeTok{file =} \StringTok{"data/ugan01.csv"}\NormalTok{, }\DataTypeTok{header =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{sep =} \StringTok{","}\NormalTok{)}
+
+\CommentTok{## First 10 rows of the Uganda dataset}
 \end{Highlighting}
 \end{Shaded}
 
+\begin{verbatim}
+##     psu age sex weight height muac oedema   haz   waz   whz
+## 1  9999  11   2    6.5   75.0   94      2  0.88 -2.47 -3.94
+## 2  9999  18   1    5.5   67.5   94      2 -5.47 -5.51 -4.42
+## 3  9999  12   2    5.2   63.3  100      2 -4.16 -4.40 -2.89
+## 4  9999   8   1    6.3   69.8  100      2 -0.36 -2.83 -3.59
+## 5  9999  17   1    6.2   68.5  101      2 -4.83 -4.64 -3.35
+## 6  9999  27   1    8.0   78.0  101      2 -3.59 -3.92 -2.90
+## 7  9999  24   2    6.2   68.4  103      2 -5.37 -4.92 -2.69
+## 8  9999  19   1    7.0   73.0  103      2 -3.72 -4.02 -3.28
+## 9  9999  12   2    6.0   67.4  104      2 -2.57 -3.36 -2.74
+## 10 9999  11   1    5.6   66.2  105      2 -3.58 -4.46 -3.76
+\end{verbatim}
+
 ~
 
-We then create case definitions.
+We then create case definitions as follows:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -223,12 +249,29 @@ We then create case definitions.
 \NormalTok{x}\OperatorTok{$}\NormalTok{gamWHZ <-}\StringTok{ }\KeywordTok{ifelse}\NormalTok{(x}\OperatorTok{$}\NormalTok{whz }\OperatorTok{<}\StringTok{ }\DecValTok{-2}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{)               }\CommentTok{## GAM by WHZ}
 \NormalTok{x}\OperatorTok{$}\NormalTok{gamMUAC <-}\StringTok{ }\KeywordTok{ifelse}\NormalTok{(x}\OperatorTok{$}\NormalTok{muac }\OperatorTok{<}\StringTok{ }\DecValTok{125}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{)            }\CommentTok{## GAM by MUAC}
 \NormalTok{x}\OperatorTok{$}\NormalTok{cGAM <-}\StringTok{ }\KeywordTok{ifelse}\NormalTok{(x}\OperatorTok{$}\NormalTok{whz }\OperatorTok{<}\StringTok{ }\DecValTok{-2} \OperatorTok{|}\StringTok{ }\NormalTok{x}\OperatorTok{$}\NormalTok{muac }\OperatorTok{<}\StringTok{ }\DecValTok{125}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{)  }\CommentTok{## GAM by WHZ and MUAC}
+
+\CommentTok{## First 10 rows of the updated Uganda dataset contining case definitions}
 \end{Highlighting}
 \end{Shaded}
 
-~
+\begin{verbatim}
+##     psu age sex weight height muac oedema   haz   waz   whz gamWHZ gamMUAC cGAM
+## 1  9999  11   2    6.5   75.0   94      2  0.88 -2.47 -3.94      1       1    1
+## 2  9999  18   1    5.5   67.5   94      2 -5.47 -5.51 -4.42      1       1    1
+## 3  9999  12   2    5.2   63.3  100      2 -4.16 -4.40 -2.89      1       1    1
+## 4  9999   8   1    6.3   69.8  100      2 -0.36 -2.83 -3.59      1       1    1
+## 5  9999  17   1    6.2   68.5  101      2 -4.83 -4.64 -3.35      1       1    1
+## 6  9999  27   1    8.0   78.0  101      2 -3.59 -3.92 -2.90      1       1    1
+## 7  9999  24   2    6.2   68.4  103      2 -5.37 -4.92 -2.69      1       1    1
+## 8  9999  19   1    7.0   73.0  103      2 -3.72 -4.02 -3.28      1       1    1
+## 9  9999  12   2    6.0   67.4  104      2 -2.57 -3.36 -2.74      1       1    1
+## 10 9999  11   1    5.6   66.2  105      2 -3.58 -4.46 -3.76      1       1    1
+\end{verbatim}
 
-Calculating for prevalence in the classical approach we get:
+\hypertarget{combined-gam-estimation-using-the-classical-approach}{%
+\subsection{Combined GAM estimation using the classical approach}\label{combined-gam-estimation-using-the-classical-approach}}
+
+Calculating for prevalence using the classical approach we get:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -279,9 +322,12 @@ We can test whether GAM cases by MUAC and GAM cases by WHZ are independent.
 
 ~
 
-The chi-square test has a p-value of \ensuremath{8.8108361\times 10^{-74}} indicating that the two case definitions are not independent.
+The chi-square test has a \emph{p-value} of \ensuremath{8.8108361\times 10^{-74}} indicating that the two case definitions are not independent.
 
 \newpage
+
+\hypertarget{combined-gam-estimation-using-proposed-hybrid-approach}{%
+\subsection{Combined GAM estimation using proposed hybrid approach}\label{combined-gam-estimation-using-proposed-hybrid-approach}}
 
 We then proceed with our proposed hybrid approach using simple PROBIT prevalence estimation.
 
@@ -333,6 +379,160 @@ We then proceed with our proposed hybrid approach using simple PROBIT prevalence
 
 \begin{verbatim}
 ## [1] 13.91
+\end{verbatim}
+
+\newpage
+
+\hypertarget{extending-the-approach-to-include-oedema-cases}{%
+\section{Extending the approach to include oedema cases}\label{extending-the-approach-to-include-oedema-cases}}
+
+Using the same concepts, we can extend the approach to include oedema cases. For this we need to take into account not only the intersection between GAM by MUAC and GAM by WHZ but also the intersection of GAM by MUAC and oedema cases, the intersection of GAM by WHZ and oedema cases, and the intersection between GAM by MUAC, GAM by WHZ and oedema cases as follows:
+
+\[\begin{aligned}
+P(GAM_{\text{MUAC}} ~ \cup ~ & GAM_{\text{WHZ}} ~ \cup ~ SAM_{\text{oedema}}) ~ = \\
+& P(GAM_{\text{MUAC}}) ~ + ~ P(GAM_{\text{WHZ}}) ~ + ~ P(SAM_\text{oedema}) \\ 
+~ & - ~ [P(GAM_{\text{MUAC}} ~ \cap ~ GAM_{\text{WHZ}}) ~ - ~ P(GAM_{\text{MUAC}} ~ \cap ~ GAM_{\text{WHZ}} ~ \cap ~ SAM_{\text{oedema}})] \\
+~ & - ~ [P(GAM_{\text{MUAC}} ~ \cap ~ SAM_{\text{oedema}}) ~ - ~ P(GAM_{\text{MUAC}} ~ \cap ~ GAM_{\text{WHZ}} ~ \cap ~ SAM_{\text{oedema}})] \\
+~ & - ~ [P(GAM_{\text{WHZ}} ~ \cap ~ SAM_{\text{oedema}}) ~ - ~ P(GAM_{\text{MUAC}} ~ \cap ~ GAM_{\text{WHZ}} ~ \cap ~ SAM_{\text{oedema}})] \\
+~ & - ~ P(GAM_{\text{MUAC}} ~ \cap ~ GAM_{\text{WHZ}} ~ \cap ~ SAM_{\text{oedema}})
+\end{aligned}\]
+
+Simplifying this we get:
+
+\[\begin{aligned}
+P(GAM_{\text{MUAC}} ~ \cup ~ & GAM_{\text{WHZ}} ~ \cup ~ SAM_{\text{oedema}}) ~ = \\
+& P(GAM_{\text{MUAC}}) ~ + ~ P(GAM_{\text{WHZ}}) ~ + ~ P(SAM_\text{oedema}) \\ 
+~ & - ~ P(GAM_{\text{MUAC}} ~ \cap ~ GAM_{\text{WHZ}}) \\
+~ & - ~ P(GAM_{\text{MUAC}} ~ \cap ~ SAM_{\text{oedema}} \\
+~ & - ~ P(GAM_{\text{WHZ}} ~ \cap ~ SAM_{\text{oedema}}) \\ 
+~ & + ~ (2 \times P(GAM_{\text{MUAC}} ~ \cap ~ GAM_{\text{WHZ}} ~ \cap ~ SAM_{\text{oedema}}))
+\end{aligned}\]
+
+\hypertarget{worked-example-for-combined-gam-by-whz-gam-by-muac-and-oedema}{%
+\section{Worked example for combined GAM by WHZ, GAM by MUAC and oedema}\label{worked-example-for-combined-gam-by-whz-gam-by-muac-and-oedema}}
+
+We try the proposed approach in R using the same dataset from Uganda used in the previous example. We already have an oedema variable that is coded into 1 for an oedema case and 2 for a non-oedema case. We just need to re-define the \texttt{cGAM} variable to include oedema cases.
+
+\newpage
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Case definition for combined GAM including oedema cases}
+\NormalTok{x}\OperatorTok{$}\NormalTok{cGAM <-}\StringTok{ }\KeywordTok{ifelse}\NormalTok{(x}\OperatorTok{$}\NormalTok{whz }\OperatorTok{<}\StringTok{ }\DecValTok{-2} \OperatorTok{|}\StringTok{ }\NormalTok{x}\OperatorTok{$}\NormalTok{muac }\OperatorTok{<}\StringTok{ }\DecValTok{125} \OperatorTok{|}\StringTok{ }\NormalTok{x}\OperatorTok{$}\NormalTok{oedema }\OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{)}
+
+\CommentTok{## First 10 rows of the updated Uganda dataset contining case definitions}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##     psu age sex weight height muac oedema   haz   waz   whz gamWHZ gamMUAC cGAM
+## 1  9999  11   2    6.5   75.0   94      2  0.88 -2.47 -3.94      1       1    1
+## 2  9999  18   1    5.5   67.5   94      2 -5.47 -5.51 -4.42      1       1    1
+## 3  9999  12   2    5.2   63.3  100      2 -4.16 -4.40 -2.89      1       1    1
+## 4  9999   8   1    6.3   69.8  100      2 -0.36 -2.83 -3.59      1       1    1
+## 5  9999  17   1    6.2   68.5  101      2 -4.83 -4.64 -3.35      1       1    1
+## 6  9999  27   1    8.0   78.0  101      2 -3.59 -3.92 -2.90      1       1    1
+## 7  9999  24   2    6.2   68.4  103      2 -5.37 -4.92 -2.69      1       1    1
+## 8  9999  19   1    7.0   73.0  103      2 -3.72 -4.02 -3.28      1       1    1
+## 9  9999  12   2    6.0   67.4  104      2 -2.57 -3.36 -2.74      1       1    1
+## 10 9999  11   1    5.6   66.2  105      2 -3.58 -4.46 -3.76      1       1    1
+\end{verbatim}
+
+\hypertarget{combined-gam-estimation-using-the-classical-approach-1}{%
+\subsection{Combined GAM estimation using the classical approach}\label{combined-gam-estimation-using-the-classical-approach-1}}
+
+Calculating for oedema and combine GAM prevalence using the classical estimator we get:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Classic prevalence for oedema cases}
+\KeywordTok{round}\NormalTok{(}\KeywordTok{prop.table}\NormalTok{(}\KeywordTok{table}\NormalTok{(x}\OperatorTok{$}\NormalTok{oedema))[}\DecValTok{1}\NormalTok{] }\OperatorTok{*}\StringTok{ }\DecValTok{100}\NormalTok{, }\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    1 
+## 0.23
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Classic prevalence for GAM by WHZ and MUAC and oedema cases}
+\KeywordTok{round}\NormalTok{(}\KeywordTok{prop.table}\NormalTok{(}\KeywordTok{table}\NormalTok{(x}\OperatorTok{$}\NormalTok{cGAM))[}\DecValTok{1}\NormalTok{] }\OperatorTok{*}\StringTok{ }\DecValTok{100}\NormalTok{, }\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##     1 
+## 15.61
+\end{verbatim}
+
+\hypertarget{combined-gam-estimation-using-proposed-hybrid-approach-1}{%
+\subsection{Combined GAM estimation using proposed hybrid approach}\label{combined-gam-estimation-using-proposed-hybrid-approach-1}}
+
+We then proceed with our proposed hybrid approach using simple PROBIT prevalence estimation to include oedema cases.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Estimate the probability of oedema cases}
+\NormalTok{pOedema <-}\StringTok{ }\KeywordTok{prop.table}\NormalTok{(}\KeywordTok{table}\NormalTok{(x}\OperatorTok{$}\NormalTok{oedema))[}\DecValTok{1}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Estimate union probability for WHZ and oedema}
+\NormalTok{pOedemaWHZ <-}\StringTok{ }\KeywordTok{table}\NormalTok{(x}\OperatorTok{$}\NormalTok{gamWHZ, x}\OperatorTok{$}\NormalTok{oedema)[}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{] }\OperatorTok{/}\StringTok{ }\KeywordTok{sum}\NormalTok{(}\KeywordTok{table}\NormalTok{(x}\OperatorTok{$}\NormalTok{gamWHZ, x}\OperatorTok{$}\NormalTok{oedema))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.11
+\end{verbatim}
+
+~
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Estimate union probability for MUAC and oedema}
+\NormalTok{pOedemaMUAC <-}\StringTok{ }\KeywordTok{table}\NormalTok{(x}\OperatorTok{$}\NormalTok{gamMUAC, x}\OperatorTok{$}\NormalTok{oedema)[}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{] }\OperatorTok{/}\StringTok{ }\KeywordTok{sum}\NormalTok{(}\KeywordTok{table}\NormalTok{(x}\OperatorTok{$}\NormalTok{gamMUAC, x}\OperatorTok{$}\NormalTok{oedema))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.11
+\end{verbatim}
+
+~
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Create variable for GAM meeting WHZ, MUAC and oedema criteria}
+\NormalTok{x}\OperatorTok{$}\NormalTok{gamUnion <-}\StringTok{ }\KeywordTok{ifelse}\NormalTok{(x}\OperatorTok{$}\NormalTok{oedema }\OperatorTok{==}\StringTok{ }\DecValTok{1} \OperatorTok{&}\StringTok{ }\NormalTok{x}\OperatorTok{$}\NormalTok{gamWHZ }\OperatorTok{==}\StringTok{ }\DecValTok{1} \OperatorTok{&}\StringTok{ }\NormalTok{x}\OperatorTok{$}\NormalTok{gamMUAC }\OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{)}
+
+\CommentTok{## Estimate union probability for MUAC, WHZ and oedema}
+\NormalTok{pGAMunion <-}\StringTok{ }\KeywordTok{prop.table}\NormalTok{(}\KeywordTok{table}\NormalTok{(x}\OperatorTok{$}\NormalTok{gamUnion))[}\DecValTok{1}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    1 
+## 0.11
+\end{verbatim}
+
+~
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Estimate combined GAM including oedema cases}
+\KeywordTok{round}\NormalTok{((pMUAC }\OperatorTok{+}\StringTok{ }\NormalTok{pWHZ }\OperatorTok{+}\StringTok{ }\NormalTok{pOedema }\OperatorTok{-}\StringTok{ }\NormalTok{pUNION }\OperatorTok{-}\StringTok{ }\NormalTok{pOedemaWHZ }\OperatorTok{-}\StringTok{ }
+\StringTok{         }\NormalTok{pOedemaMUAC }\OperatorTok{+}\StringTok{ }\NormalTok{(}\DecValTok{2} \OperatorTok{*}\StringTok{ }\NormalTok{pGAMunion)) }\OperatorTok{*}\StringTok{ }\DecValTok{100}\NormalTok{, }\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##     1 
+## 14.14
 \end{verbatim}
 
 \bibliography{bibliography.bib}

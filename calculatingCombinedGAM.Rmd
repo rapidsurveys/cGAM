@@ -1,7 +1,7 @@
 ---
 title: Notes on calculating combined GAM estimates within the Rapid Assessment Method (RAM)
 author: ""
-date: '`r format(Sys.Date(), "%d %B %Y")`'
+date: "15 February 2020" #'`r format(Sys.Date(), "%d %B %Y")`'
 fontsize: 12pt
 geometry: margin=2cm
 documentclass: article
@@ -18,8 +18,7 @@ urlcolor: blue
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE,
-                      warning = FALSE,
+knitr::opts_chunk$set(warning = FALSE,
                       message = FALSE)
 
 if(!require(ggplot2)) install.packages("ggplot2")
@@ -46,6 +45,8 @@ themeSettings <- theme_bw() +
 
 # Background
 
+\newpage
+
 # Possible approach
 
 PROBIT gives a probability so we look to combining two probabilities:
@@ -60,19 +61,21 @@ We have the first two terms but not the third. We can estimate the third term fr
 
 ```{r twoByTwo, echo = FALSE, eval = TRUE}
 twoByTwo <- data.frame(rbind(c("a", "b"), c("c", "d")))
-row.names(twoByTwo) <- c("MUAC < 125", "MUAC ≥ 125")
+row.names(twoByTwo) <- c("$\\text{MUAC} < 125$", "$\\text{MUAC} \\geq 125$")
 
 knitr::kable(x = twoByTwo,
              booktabs = TRUE,
              row.names = TRUE,
-             col.names = c("WHZ < -2", "WHZ ≥ -2"),
+             col.names = c("$\\text{WHZ} < -2$", "$\\text{WHZ} \\geq -2$"),
              align = "c",
+             escape = FALSE,
              format = "latex") %>%
+  kableExtra::kable_styling(latex_options = c("striped", "HOLD_position"), 
+                            font_size = 16) %>%  
   kableExtra::row_spec(row = 0, bold = TRUE) %>%   
-  kableExtra::column_spec(column = 1, bold = TRUE) %>%
   kableExtra::row_spec(row = 1:2, monospace = TRUE) %>%
   kableExtra::column_spec(column = 1:3, monospace = TRUE) %>%
-  kableExtra::kable_styling(latex_options = c("striped", "HOLD_position"), font_size = 14)
+  kableExtra::column_spec(column = 1, bold = TRUE)  
 ```
 
 and
@@ -83,38 +86,96 @@ We have a small sample size so the estimate will lack precision but I think that
 
 $$ P(GAM_{\text{MUAC}} ~ \cap ~ GAM_{\text{WHZ}}) ~ = ~ P(GAM_{\text{MUAC}}) ~ \times ~ P(GAM_{\text{WHZ}}) $$
 
-will not work as it assumes independence. We can try to move forward with this hybrid method.
+will not work as it assumes independence.
+
+We can try to move forward with this hybrid method.
 
 \newpage
 
 We try this in R using a dataset from Uganda.
 
-```{r example, echo = TRUE, eval = TRUE}
+```{r example1, echo = TRUE, eval = TRUE}
 ## Read dataset
 x <- read.table(file = "data/ugan01.csv", header = TRUE, sep = ",")
+```
 
+&nbsp;
+
+We then create case definitions.
+
+```{r example2, echo = TRUE, eval = TRUE}
 ## Case definitions
-x$gamWHZ <- ifelse(x$whz < -2, 1, 2)
-x$gamMUAC <- ifelse(x$muac < 125, 1, 2)
-x$cGAM <- ifelse(x$whz < -2 | x$muac < 125, 1, 2)
+x$gamWHZ <- ifelse(x$whz < -2, 1, 2)               ## GAM by WHZ
+x$gamMUAC <- ifelse(x$muac < 125, 1, 2)            ## GAM by MUAC
+x$cGAM <- ifelse(x$whz < -2 | x$muac < 125, 1, 2)  ## GAM by WHZ and MUAC
+```
 
-## Classic prevalence
+&nbsp;
+
+Calculating for prevalence in the classical approach we get:
+
+```{r example3, echo = TRUE, eval = TRUE}
+## Classic prevalence for GAM by MUAC
 round(prop.table(table(x$gamMUAC))[1] * 100, 2)
 
+## Classic prevalence for GAM by WHZ
 round(prop.table(table(x$gamWHZ))[1] * 100, 2)
 
+## Classic prevalence for GAM by WHZ and MUAC
 round(prop.table(table(x$cGAM))[1] * 100, 2)
+```
 
+&nbsp;
+
+We can test whether GAM cases by MUAC and GAM cases by WHZ are independent.
+
+```{r example4, echo = TRUE, eval = FALSE}
 ## Test if the two case definitions are independent
-chisq.test(table(x$gamMUAC, x$gamWHZ))$p.value
+chisq.test(table(x$gamMUAC, x$gamWHZ))
+```
 
-## Simple PROBIT prevalence
+&nbsp;
+
+The chi-square test has a p-value of `r chisq.test(table(x$gamMUAC, x$gamWHZ))$p.value` indicating that the two case definitions are not independent.
+
+\newpage
+
+We then proceed with our proposed hybrid approach using simple PROBIT prevalence estimation.
+
+```{r example6, echo = TRUE, eval = TRUE}
+## Simple PROBIT prevalence for GAM by MUAC
 pMUAC <- pnorm(125, mean(x$muac), sd(x$muac))
-pWHZ <- pnorm(-2, mean(x$whz), sd(x$whz))
+```
 
+```{r example6a, echo = FALSE, eval = TRUE}
+round(pMUAC * 100, 2)
+```
+
+&nbsp;
+
+```{r example7, echo = TRUE, eval = TRUE}
+## Simple PROBIT prevalence for GAM by WHZ
+pWHZ <- pnorm(-2, mean(x$whz), sd(x$whz))
+```
+
+```{r example7a, echo = FALSE, eval = TRUE}
+round(pWHZ * 100, 2)
+```
+
+&nbsp;
+
+```{r example8, echo = TRUE, eval = TRUE}
 ## Estimate the UNION probability
 pUNION <- table(x$gamMUAC, x$gamWHZ)[1,1] / sum(table(x$gamMUAC, x$gamWHZ))
+```
 
-## cGAM by PROBIT
+```{r example8a, echo = FALSE, eval = TRUE}
+round(pUNION * 100, 2)
+```
+
+&nbsp;
+
+```{r example9, echo = TRUE, eval = TRUE}
+## Estimate of GAM by MUAC and WHZ by PROBIT
 round((pMUAC + pWHZ - pUNION) * 100, 2)
 ```

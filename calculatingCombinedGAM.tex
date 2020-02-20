@@ -46,40 +46,38 @@
 \newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
 \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
 % Add ',fontsize=\small' for more characters per line
-\usepackage{framed}
-\definecolor{shadecolor}{RGB}{248,248,248}
-\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
-\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
-\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
-\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newenvironment{Shaded}{}{}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.00,0.50,0.00}{#1}}
+\newcommand{\AttributeTok}[1]{#1}
+\newcommand{\BaseNTok}[1]{#1}
 \newcommand{\BuiltInTok}[1]{#1}
-\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
-\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
-\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
-\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
-\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.00,0.50,0.50}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.00,0.50,0.00}{#1}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.00,0.50,0.00}{#1}}
+\newcommand{\ConstantTok}[1]{#1}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.00,1.00}{#1}}
+\newcommand{\DataTypeTok}[1]{#1}
+\newcommand{\DecValTok}[1]{#1}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.00,0.50,0.00}{#1}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
 \newcommand{\ExtensionTok}[1]{#1}
-\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
-\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\FloatTok}[1]{#1}
+\newcommand{\FunctionTok}[1]{#1}
 \newcommand{\ImportTok}[1]{#1}
-\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.00,0.50,0.00}{#1}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.00,1.00}{#1}}
 \newcommand{\NormalTok}[1]{#1}
-\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
-\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
-\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\OperatorTok}[1]{#1}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{1.00,0.25,0.00}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{1.00,0.25,0.00}{#1}}
 \newcommand{\RegionMarkerTok}[1]{#1}
-\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.50,0.50}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.00,0.50,0.50}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.00,0.50,0.50}{#1}}
+\newcommand{\VariableTok}[1]{#1}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.00,0.50,0.50}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.00,0.50,0.00}{\textbf{#1}}}
 \usepackage{longtable,booktabs}
 % Fix footnotes in tables (requires footnote package)
 \IfFileExists{footnote.sty}{\usepackage{footnote}\makesavenoteenv{longtable}}{}
@@ -163,6 +161,8 @@
 \hypertarget{background}{%
 \section{Background}\label{background}}
 
+\newpage
+
 \hypertarget{possible-approach}{%
 \section{Possible approach}\label{possible-approach}}
 
@@ -177,14 +177,14 @@ However, the problem is that we do not have \texttt{independent} probabilities. 
 We have the first two terms but not the third. We can estimate the third term from a 2 by 2 table:
 
 \begin{table}[H]
-\centering\begingroup\fontsize{14}{16}\selectfont
+\centering\begingroup\fontsize{16}{18}\selectfont
 
-\begin{tabular}{>{\ttfamily}l>{\ttfamily}c>{\ttfamily}c}
+\begin{tabular}{>{\bfseries}l>{\ttfamily}c>{\ttfamily}c}
 \toprule
-\textbf{ } & \textbf{WHZ < -2} & \textbf{WHZ ≥ -2}\\
+\textbf{ } & \textbf{$\text{WHZ} < -2$} & \textbf{$\text{WHZ} \geq -2$}\\
 \midrule
-\rowcolor{gray!6}  \ttfamily{MUAC < 125} & \ttfamily{a} & \ttfamily{b}\\
-\ttfamily{MUAC ≥ 125} & \ttfamily{c} & \ttfamily{d}\\
+\rowcolor{gray!6}  \ttfamily{$\text{MUAC} < 125$} & \ttfamily{a} & \ttfamily{b}\\
+\ttfamily{$\text{MUAC} \geq 125$} & \ttfamily{c} & \ttfamily{d}\\
 \bottomrule
 \end{tabular}
 \endgroup{}
@@ -198,7 +198,9 @@ We have a small sample size so the estimate will lack precision but I think that
 
 \[ P(GAM_{\text{MUAC}} ~ \cap ~ GAM_{\text{WHZ}}) ~ = ~ P(GAM_{\text{MUAC}}) ~ \times ~ P(GAM_{\text{WHZ}}) \]
 
-will not work as it assumes independence. We can try to move forward with this hybrid method.
+will not work as it assumes independence.
+
+We can try to move forward with this hybrid method.
 
 \newpage
 
@@ -208,13 +210,29 @@ We try this in R using a dataset from Uganda.
 \begin{Highlighting}[]
 \CommentTok{## Read dataset}
 \NormalTok{x <-}\StringTok{ }\KeywordTok{read.table}\NormalTok{(}\DataTypeTok{file =} \StringTok{"data/ugan01.csv"}\NormalTok{, }\DataTypeTok{header =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{sep =} \StringTok{","}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
+~
+
+We then create case definitions.
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \CommentTok{## Case definitions}
-\NormalTok{x}\OperatorTok{$}\NormalTok{gamWHZ <-}\StringTok{ }\KeywordTok{ifelse}\NormalTok{(x}\OperatorTok{$}\NormalTok{whz }\OperatorTok{<}\StringTok{ }\DecValTok{-2}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{)}
-\NormalTok{x}\OperatorTok{$}\NormalTok{gamMUAC <-}\StringTok{ }\KeywordTok{ifelse}\NormalTok{(x}\OperatorTok{$}\NormalTok{muac }\OperatorTok{<}\StringTok{ }\DecValTok{125}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{)}
-\NormalTok{x}\OperatorTok{$}\NormalTok{cGAM <-}\StringTok{ }\KeywordTok{ifelse}\NormalTok{(x}\OperatorTok{$}\NormalTok{whz }\OperatorTok{<}\StringTok{ }\DecValTok{-2} \OperatorTok{|}\StringTok{ }\NormalTok{x}\OperatorTok{$}\NormalTok{muac }\OperatorTok{<}\StringTok{ }\DecValTok{125}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{)}
+\NormalTok{x}\OperatorTok{$}\NormalTok{gamWHZ <-}\StringTok{ }\KeywordTok{ifelse}\NormalTok{(x}\OperatorTok{$}\NormalTok{whz }\OperatorTok{<}\StringTok{ }\DecValTok{-2}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{)               }\CommentTok{## GAM by WHZ}
+\NormalTok{x}\OperatorTok{$}\NormalTok{gamMUAC <-}\StringTok{ }\KeywordTok{ifelse}\NormalTok{(x}\OperatorTok{$}\NormalTok{muac }\OperatorTok{<}\StringTok{ }\DecValTok{125}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{)            }\CommentTok{## GAM by MUAC}
+\NormalTok{x}\OperatorTok{$}\NormalTok{cGAM <-}\StringTok{ }\KeywordTok{ifelse}\NormalTok{(x}\OperatorTok{$}\NormalTok{whz }\OperatorTok{<}\StringTok{ }\DecValTok{-2} \OperatorTok{|}\StringTok{ }\NormalTok{x}\OperatorTok{$}\NormalTok{muac }\OperatorTok{<}\StringTok{ }\DecValTok{125}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{)  }\CommentTok{## GAM by WHZ and MUAC}
+\end{Highlighting}
+\end{Shaded}
 
-\CommentTok{## Classic prevalence}
+~
+
+Calculating for prevalence in the classical approach we get:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Classic prevalence for GAM by MUAC}
 \KeywordTok{round}\NormalTok{(}\KeywordTok{prop.table}\NormalTok{(}\KeywordTok{table}\NormalTok{(x}\OperatorTok{$}\NormalTok{gamMUAC))[}\DecValTok{1}\NormalTok{] }\OperatorTok{*}\StringTok{ }\DecValTok{100}\NormalTok{, }\DecValTok{2}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
@@ -226,6 +244,7 @@ We try this in R using a dataset from Uganda.
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\CommentTok{## Classic prevalence for GAM by WHZ}
 \KeywordTok{round}\NormalTok{(}\KeywordTok{prop.table}\NormalTok{(}\KeywordTok{table}\NormalTok{(x}\OperatorTok{$}\NormalTok{gamWHZ))[}\DecValTok{1}\NormalTok{] }\OperatorTok{*}\StringTok{ }\DecValTok{100}\NormalTok{, }\DecValTok{2}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
@@ -237,6 +256,7 @@ We try this in R using a dataset from Uganda.
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\CommentTok{## Classic prevalence for GAM by WHZ and MUAC}
 \KeywordTok{round}\NormalTok{(}\KeywordTok{prop.table}\NormalTok{(}\KeywordTok{table}\NormalTok{(x}\OperatorTok{$}\NormalTok{cGAM))[}\DecValTok{1}\NormalTok{] }\OperatorTok{*}\StringTok{ }\DecValTok{100}\NormalTok{, }\DecValTok{2}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
@@ -246,27 +266,67 @@ We try this in R using a dataset from Uganda.
 ## 15.5
 \end{verbatim}
 
+~
+
+We can test whether GAM cases by MUAC and GAM cases by WHZ are independent.
+
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{## Test if the two case definitions are independent}
-\KeywordTok{chisq.test}\NormalTok{(}\KeywordTok{table}\NormalTok{(x}\OperatorTok{$}\NormalTok{gamMUAC, x}\OperatorTok{$}\NormalTok{gamWHZ))}\OperatorTok{$}\NormalTok{p.value}
+\KeywordTok{chisq.test}\NormalTok{(}\KeywordTok{table}\NormalTok{(x}\OperatorTok{$}\NormalTok{gamMUAC, x}\OperatorTok{$}\NormalTok{gamWHZ))}
+\end{Highlighting}
+\end{Shaded}
+
+~
+
+The chi-square test has a p-value of \ensuremath{8.8108361\times 10^{-74}} indicating that the two case definitions are not independent.
+
+\newpage
+
+We then proceed with our proposed hybrid approach using simple PROBIT prevalence estimation.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Simple PROBIT prevalence for GAM by MUAC}
+\NormalTok{pMUAC <-}\StringTok{ }\KeywordTok{pnorm}\NormalTok{(}\DecValTok{125}\NormalTok{, }\KeywordTok{mean}\NormalTok{(x}\OperatorTok{$}\NormalTok{muac), }\KeywordTok{sd}\NormalTok{(x}\OperatorTok{$}\NormalTok{muac))}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## [1] 8.810836e-74
+## [1] 13.65
 \end{verbatim}
+
+~
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{## Simple PROBIT prevalence}
-\NormalTok{pMUAC <-}\StringTok{ }\KeywordTok{pnorm}\NormalTok{(}\DecValTok{125}\NormalTok{, }\KeywordTok{mean}\NormalTok{(x}\OperatorTok{$}\NormalTok{muac), }\KeywordTok{sd}\NormalTok{(x}\OperatorTok{$}\NormalTok{muac))}
+\CommentTok{## Simple PROBIT prevalence for GAM by WHZ}
 \NormalTok{pWHZ <-}\StringTok{ }\KeywordTok{pnorm}\NormalTok{(}\OperatorTok{-}\DecValTok{2}\NormalTok{, }\KeywordTok{mean}\NormalTok{(x}\OperatorTok{$}\NormalTok{whz), }\KeywordTok{sd}\NormalTok{(x}\OperatorTok{$}\NormalTok{whz))}
+\end{Highlighting}
+\end{Shaded}
 
+\begin{verbatim}
+## [1] 7.61
+\end{verbatim}
+
+~
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \CommentTok{## Estimate the UNION probability}
 \NormalTok{pUNION <-}\StringTok{ }\KeywordTok{table}\NormalTok{(x}\OperatorTok{$}\NormalTok{gamMUAC, x}\OperatorTok{$}\NormalTok{gamWHZ)[}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{] }\OperatorTok{/}\StringTok{ }\KeywordTok{sum}\NormalTok{(}\KeywordTok{table}\NormalTok{(x}\OperatorTok{$}\NormalTok{gamMUAC, x}\OperatorTok{$}\NormalTok{gamWHZ))}
+\end{Highlighting}
+\end{Shaded}
 
-\CommentTok{## cGAM by PROBIT}
+\begin{verbatim}
+## [1] 7.35
+\end{verbatim}
+
+~
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Estimate of GAM by MUAC and WHZ by PROBIT}
 \KeywordTok{round}\NormalTok{((pMUAC }\OperatorTok{+}\StringTok{ }\NormalTok{pWHZ }\OperatorTok{-}\StringTok{ }\NormalTok{pUNION) }\OperatorTok{*}\StringTok{ }\DecValTok{100}\NormalTok{, }\DecValTok{2}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}

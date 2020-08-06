@@ -64,7 +64,7 @@ ba.plot <- function(a, b, main, xlab, ylab, xlim, ylim)
 #
 #
 #
-#                           P = A + C - X
+#                           P = A + B - X
 #
 #
 prevalencePROBIT2 <- function(data, replicates = 39)

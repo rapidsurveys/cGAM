@@ -212,7 +212,8 @@ REPLICATES <- 5
 #
 # Run sampling simulation
 #
-files.2.process <- dir(path = ".", pattern = "\\.csv$")
+#files.2.process <- dir(path = ".", pattern = "\\.csv$")
+files.2.process <- dir(path = "probitGAM", pattern = "\\.csv$")
 N <- length(files.2.process) * length(SAMPLE.SIZES) * REPLICATES
 surveyResults <- data.frame(name = character(N), n = numeric(N), true = numeric(N), estimate = numeric(N), lci = numeric(N), uci = numeric(N))
 rowIndex <- 0
@@ -222,7 +223,8 @@ for(file.name in files.2.process)
   # Report name of current population and retrieve data
   #
   cat("\n", file.name, " : ", sep = "")
-  x <- read.table(file.name, header = TRUE, sep = ",")
+  #x <- read.table(file.name, header = TRUE, sep = ",")
+  x <- read.table(paste("probitGAM", file.name, sep = "/"), header = TRUE, sep = ",")
   #
   # Make a population with N = c. POP.SIZE
   #

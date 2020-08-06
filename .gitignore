@@ -3,4 +3,7 @@
 .RData
 .Ruserdata
 .DS_Store
-.gitignore
+.csv
+PROBIT.GAM3.BA.png
+PROBIT.GAM3.BP.png
+PROBIT.GAM3.RData
